@@ -4,7 +4,7 @@ import {
     LayoutDashboard, Users, Briefcase,
     ShieldCheck, LogOut, Menu, X,
     FileText, Target, Activity, Send,
-    Settings, Bell, ChevronRight, Plus, FileCheck, User
+    Settings, Bell, ChevronRight, Plus, FileCheck, User, CheckCircle
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -15,7 +15,8 @@ export default function DashboardLayout({ children, role, userName }) {
     // Sidebar Links based on Role
     const adminLinks = [
         { name: 'Overview', path: '/admin/dashboard', icon: <LayoutDashboard size={20} /> },
-        { name: 'Applicants', path: '/admin/applicants', icon: <FileText size={20} /> },
+        { name: 'Review Applicants', path: '/admin/applicants', icon: <FileText size={20} /> },
+        { name: 'Shortlisted Pool', path: '/admin/shortlisted', icon: <CheckCircle size={20} /> },
         { name: 'Manage People', path: '/admin/manage-users', icon: <Users size={20} /> },
         { name: 'Manage Jobs', path: '/admin/manage-jobs', icon: <Briefcase size={20} /> },
     ]

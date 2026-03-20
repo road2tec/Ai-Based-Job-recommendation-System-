@@ -9,6 +9,7 @@ def get_dashboard_stats():
     total_jobs = jobs_collection.count_documents({})
     total_companies = companies_collection.count_documents({})
     total_applications = applications_collection.count_documents({})
+    total_shortlisted = applications_collection.count_documents({"status": "Shortlisted"})
     
     # Generate recent activity dynamically
     recent_activity = []
@@ -51,6 +52,7 @@ def get_dashboard_stats():
         "total_jobs": total_jobs,
         "total_companies": total_companies,
         "total_applications": total_applications,
+        "total_shortlisted": total_shortlisted,
         "recent_activity": recent_activity
     }
 
@@ -84,3 +86,13 @@ def verify_user(user_id: str):
     if res.matched_count == 0:
         raise HTTPException(status_code=404, detail="User not found")
     return {"message": "User verified successfully"}
+
+@router.get("/shortlisted")
+def get_all_shortlisted():
+    apps = list(applications_collection.find({"status": "Shortlisted"}, {"_id": 0}))
+    for app in apps:
+        user = users_collection.find_one({"id": app["candidate_id"]}, {"_id": 0, "password": 0})
+        job = jobs_collection.find_one({"job_id": app["job_id"]}, {"_id": 0})
+        app["user"] = user
+        app["job"] = job
+    return apps

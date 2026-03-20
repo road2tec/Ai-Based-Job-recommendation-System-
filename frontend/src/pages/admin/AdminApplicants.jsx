@@ -9,6 +9,7 @@ export default function AdminApplicants() {
     const [selectedJob, setSelectedJob] = useState('')
     const [applicants, setApplicants] = useState([])
     const [loading, setLoading] = useState(false)
+    const [showShortlistedOnly, setShowShortlistedOnly] = useState(false)
     const userName = localStorage.getItem('userName') || "Admin"
 
     useEffect(() => {
@@ -38,6 +39,10 @@ export default function AdminApplicants() {
         }
     }, [selectedJob])
 
+    const filteredApplicants = showShortlistedOnly 
+        ? applicants.filter(app => app.status === 'Shortlisted')
+        : applicants
+
     return (
         <DashboardLayout role="admin" userName={userName}>
             <div className="flex flex-col gap-8">
@@ -62,6 +67,20 @@ export default function AdminApplicants() {
                         </select>
                         <ChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={24} />
                     </div>
+
+                    {selectedJob && (
+                        <button
+                            onClick={() => setShowShortlistedOnly(!showShortlistedOnly)}
+                            className={`px-8 py-5 rounded-2xl font-black text-sm transition-all border flex items-center gap-2 whitespace-nowrap shadow-sm group ${
+                                showShortlistedOnly 
+                                ? 'bg-emerald-50 text-[#00B074] border-emerald-100' 
+                                : 'bg-white text-gray-400 border-gray-100 hover:border-[#00B074] hover:text-[#00B074]'
+                            }`}
+                        >
+                            <CheckCircle size={20} className={showShortlistedOnly ? "text-[#00B074]" : "text-gray-300"} />
+                            {showShortlistedOnly ? "Shortlisted Talent" : "All Applicants"}
+                        </button>
+                    )}
                 </div>
 
                 {/* Applicants List Area */}
@@ -73,7 +92,7 @@ export default function AdminApplicants() {
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {applicants.sort((a, b) => b.match_score - a.match_score).map((app, idx) => (
+                            {filteredApplicants.sort((a, b) => b.match_score - a.match_score).map((app, idx) => (
                                 <motion.div
                                     key={idx}
                                     initial={{ opacity: 0, y: 20 }}
@@ -114,14 +133,18 @@ export default function AdminApplicants() {
                         </div>
                     )}
 
-                    {selectedJob && applicants.length === 0 && !loading && (
+                    {selectedJob && filteredApplicants.length === 0 && !loading && (
                         <div className="p-20 text-center flex flex-col items-center gap-6 bg-white rounded-[3rem] border border-dashed border-gray-200">
                             <div className="bg-gray-50 p-6 rounded-full text-gray-300">
                                 <Search size={48} />
                             </div>
                             <div>
-                                <h3 className="text-xl font-black text-gray-400 italic">No applicants found for this job yet.</h3>
-                                <p className="text-gray-300 font-bold text-sm mt-1 uppercase tracking-widest">Waiting for candidates...</p>
+                                <h3 className="text-xl font-black text-gray-400 italic">
+                                    {showShortlistedOnly ? "No students have been shortlisted for this job yet." : "No applicants found for this job yet."}
+                                </h3>
+                                <p className="text-gray-300 font-bold text-sm mt-1 uppercase tracking-widest">
+                                    {showShortlistedOnly ? "Review all candidates to find the best talent." : "Waiting for candidates..."}
+                                </p>
                             </div>
                         </div>
                     )}

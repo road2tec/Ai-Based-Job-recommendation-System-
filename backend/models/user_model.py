@@ -37,3 +37,7 @@ class CompanyProfile(BaseModel):
     company_name: str
     industry: str
     description: str
+
+class OTPVerify(BaseModel):
+    email: str
+    otp: str

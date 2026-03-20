@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom'
 export default function MyApplications() {
     const [applications, setApplications] = useState([])
     const [loading, setLoading] = useState(true)
+    const [showShortlistedOnly, setShowShortlistedOnly] = useState(false)
     const userName = localStorage.getItem('userName') || "User"
     const userId = localStorage.getItem('userId')
 
@@ -37,14 +38,34 @@ export default function MyApplications() {
         }
     }
 
+    const filteredApps = showShortlistedOnly 
+        ? applications.filter(app => app.status === 'Shortlisted')
+        : applications
+
     return (
         <DashboardLayout role="candidate" userName={userName}>
             <div className="flex flex-col gap-8">
                 {/* Header Section */}
-                <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
-                    <h2 className="text-3xl font-black text-gray-900 tracking-tight">My <span className="text-[#00B074]">Applications</span></h2>
-                    <p className="text-gray-500 font-bold mt-1">Track the status of the jobs you've applied for.</p>
-                </motion.div>
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, y: 0 }}>
+                        <h2 className="text-3xl font-black text-gray-900 tracking-tight">My <span className="text-[#00B074]">Applications</span></h2>
+                        <p className="text-gray-500 font-bold mt-1">Track the status of the jobs you've applied for.</p>
+                    </motion.div>
+
+                    {applications.length > 0 && (
+                        <button
+                            onClick={() => setShowShortlistedOnly(!showShortlistedOnly)}
+                            className={`px-6 py-3 rounded-2xl font-black text-sm transition-all border flex items-center gap-2 shadow-sm ${
+                                showShortlistedOnly 
+                                ? 'bg-emerald-50 text-[#00B074] border-emerald-100' 
+                                : 'bg-white text-gray-400 border-gray-100'
+                            }`}
+                        >
+                            <CheckCircle size={18} />
+                            Shortlisted Only
+                        </button>
+                    )}
+                </div>
 
                 {/* Applications List */}
                 <div className="flex flex-col gap-6">
@@ -66,9 +87,19 @@ export default function MyApplications() {
                                 View Recommended Jobs
                             </Link>
                         </div>
+                    ) : filteredApps.length === 0 ? (
+                        <div className="p-20 text-center flex flex-col items-center gap-6 bg-white rounded-[3rem] border border-dashed border-gray-200">
+                            <div className="bg-gray-50 p-6 rounded-full text-gray-300">
+                                <Search size={48} />
+                            </div>
+                            <div>
+                                <h3 className="text-xl font-black text-gray-400 italic">No shortlisted jobs found.</h3>
+                                <p className="text-gray-400 font-bold mt-2 uppercase tracking-widest text-xs">Keep applying and improving your skills!</p>
+                            </div>
+                        </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {applications.map((app, idx) => {
+                            {filteredApps.map((app, idx) => {
                                 const statusDetails = getStatusDetails(app.status)
                                 return (
                                     <motion.div

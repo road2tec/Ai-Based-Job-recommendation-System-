@@ -27,6 +27,7 @@ import AdminDashboard from './pages/admin/Dashboard'
 import ManageUsers from './pages/admin/ManageUsers'
 import ManageJobs from './pages/admin/ManageJobs'
 import AdminApplicants from './pages/admin/AdminApplicants'
+import ShortlistedTalent from './pages/admin/ShortlistedTalent'
 
 import Chatbot from './components/Chatbot'
 
@@ -68,6 +69,7 @@ function AppContent() {
           <Route path="/admin/applicants" element={<AdminApplicants />} />
           <Route path="/admin/manage-users" element={<ManageUsers />} />
           <Route path="/admin/manage-jobs" element={<ManageJobs />} />
+          <Route path="/admin/shortlisted" element={<ShortlistedTalent />} />
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
