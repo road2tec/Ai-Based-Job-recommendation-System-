@@ -6,6 +6,7 @@ import { motion } from 'framer-motion'
 
 export default function ManageJobs() {
     const [jobs, setJobs] = useState([])
+    const [searchTerm, setSearchTerm] = useState('')
     const userName = localStorage.getItem('userName') || "Admin"
 
     useEffect(() => {
@@ -29,6 +30,16 @@ export default function ManageJobs() {
         }
     }
 
+    const filteredJobs = jobs.filter(job => {
+        const query = searchTerm.toLowerCase()
+        return (
+            job.title?.toLowerCase().includes(query) ||
+            job.company_name?.toLowerCase().includes(query) ||
+            job.location?.toLowerCase().includes(query) ||
+            `#jp-${job.job_id?.substring(0, 4)}`.toLowerCase().includes(query)
+        )
+    })
+
     return (
         <DashboardLayout role="admin" userName={userName}>
             <div className="flex flex-col gap-8">
@@ -44,7 +55,13 @@ export default function ManageJobs() {
                 <div className="bg-white p-4 rounded-3xl border border-gray-100 flex flex-wrap gap-4 shadow-sm items-center">
                     <div className="flex-grow flex items-center bg-gray-50 px-5 py-3 rounded-2xl border border-gray-100 group focus-within:ring-2 focus-within:ring-[#00B074]">
                         <Search className="text-gray-400 group-focus-within:text-[#00B074] transition-colors" />
-                        <input type="text" placeholder="Search by job title or company..." className="w-full bg-transparent border-0 focus:ring-0 font-medium ml-3" />
+                        <input 
+                            type="text" 
+                            placeholder="Search by job title, company, location, or ID..." 
+                            className="w-full bg-transparent border-0 focus:ring-0 font-medium ml-3" 
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
                     </div>
                     <button className="flex items-center gap-2 bg-gray-50 px-6 py-3 rounded-2xl border border-gray-100 font-bold text-gray-500 hover:bg-emerald-50 hover:text-[#00B074] transition-all">
                         <Filter size={18} /> Category
@@ -56,7 +73,7 @@ export default function ManageJobs() {
 
                 {/* Jobs List Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {jobs.map((job, idx) => (
+                    {filteredJobs.map((job, idx) => (
                         <motion.div
                             key={idx}
                             initial={{ opacity: 0, y: 20 }}
@@ -108,12 +125,14 @@ export default function ManageJobs() {
                             </div>
                         </motion.div>
                     ))}
-                    {jobs.length === 0 && (
+                    {filteredJobs.length === 0 && (
                         <div className="col-span-full p-20 text-center flex flex-col items-center gap-4 bg-white rounded-[2.5rem] border border-dashed border-gray-200">
                             <div className="p-6 bg-gray-50 rounded-full text-gray-300">
                                 <Briefcase size={48} />
                             </div>
-                            <h3 className="text-xl font-black text-gray-400 italic">No job posts available to manage.</h3>
+                            <h3 className="text-xl font-black text-gray-400 italic">
+                                {jobs.length === 0 ? "No job posts available to manage." : `No results found for "${searchTerm}"`}
+                            </h3>
                         </div>
                     )}
                 </div>
