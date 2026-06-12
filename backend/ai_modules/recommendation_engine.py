@@ -1,15 +1,19 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from utils.skill_utils import is_skill_matched
 
 def calculate_match_percentage(candidate_skills, required_skills):
-    candidate_set = set([skill.lower() for skill in candidate_skills])
-    required_set = set([skill.lower() for skill in required_skills])
-    
-    if not required_set:
+    # Filter empty/whitespace from required skills
+    clean_required = [s.strip() for s in required_skills if s and s.strip()]
+    if not clean_required:
         return 100.0
-    
-    matched = candidate_set.intersection(required_set)
-    match_score = (len(matched) / len(required_set)) * 100
+        
+    matched_count = 0
+    for req_skill in clean_required:
+        if is_skill_matched(req_skill, candidate_skills):
+            matched_count += 1
+            
+    match_score = (matched_count / len(clean_required)) * 100
     return round(match_score, 2)
 
 def recommend_jobs_tfidf(candidate_skills, jobs):

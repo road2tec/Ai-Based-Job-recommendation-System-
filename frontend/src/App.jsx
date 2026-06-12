@@ -8,6 +8,7 @@ import About from './pages/About'
 import Contact from './pages/Contact'
 import FindJobs from './pages/FindJobs'
 import Features from './pages/Features'
+import JobDetails from './pages/JobDetails'
 
 // Candidate
 import CandidateDashboard from './pages/candidate/Dashboard'
@@ -36,7 +37,8 @@ function AppContent() {
   const location = useLocation();
   const hideNavPaths = ['/login', '/signup'];
   const isDashboard = location.pathname.startsWith('/admin') || location.pathname.startsWith('/candidate') || location.pathname.startsWith('/employer');
-  const shouldHideNav = hideNavPaths.includes(location.pathname) || isDashboard;
+  const isJobDetails = location.pathname.startsWith('/jobs/') && location.pathname !== '/jobs';
+  const shouldHideNav = hideNavPaths.includes(location.pathname) || isDashboard || isJobDetails;
 
   return (
     <div className="min-h-screen flex flex-col font-sans">
@@ -51,6 +53,7 @@ function AppContent() {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/jobs" element={<FindJobs />} />
+          <Route path="/jobs/:jobId" element={<JobDetails />} />
           <Route path="/features" element={<Features />} />
 
           {/* Candidate Routes */}

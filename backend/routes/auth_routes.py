@@ -1,5 +1,4 @@
 from fastapi import APIRouter, HTTPException, Depends
-from passlib.context import CryptContext
 from datetime import timedelta
 import uuid
 

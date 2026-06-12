@@ -13,6 +13,20 @@ export default function Recommendations() {
     const userName = localStorage.getItem('userName') || "User"
     const userId = localStorage.getItem('userId')
 
+    const [wishlist, setWishlist] = useState(() => {
+        try { return JSON.parse(localStorage.getItem('wishlist') || '[]') } catch { return [] }
+    })
+
+    const toggleWishlist = (jobId) => {
+        setWishlist(prev => {
+            const updated = prev.includes(jobId)
+                ? prev.filter(id => id !== jobId)
+                : [...prev, jobId]
+            localStorage.setItem('wishlist', JSON.stringify(updated))
+            return updated
+        })
+    }
+
     useEffect(() => {
         const fetchRecsAndApps = async () => {
             try {
@@ -147,30 +161,46 @@ export default function Recommendations() {
                                     </div>
                                 </div>
 
-                                <div className="flex gap-4">
-                                    <button className="p-5 bg-gray-50 rounded-2xl text-[#00B074] hover:bg-[#00B074] hover:text-white transition-all shadow-sm border border-transparent hover:border-emerald-100">
-                                        <Heart size={24} />
-                                    </button>
-                                    <button
-                                        onClick={() => applyJob(job.job_id, job.match_percentage)}
-                                        disabled={applying === job.job_id || appliedJobs.includes(job.job_id)}
-                                        className={`flex-grow font-black py-5 rounded-2xl transition-all flex justify-center items-center gap-3 active:scale-95 ${appliedJobs.includes(job.job_id)
-                                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200'
-                                            : 'bg-[#00B074] text-white hover:bg-[#009663] shadow-xl shadow-emerald-200 disabled:opacity-70'
-                                            }`}
+                                <div className="flex flex-col gap-3 w-full mt-auto">
+                                    <Link 
+                                        to={`/jobs/${job.job_id}`} 
+                                        className="w-full bg-white text-[#00B074] border border-[#00B074] py-3.5 rounded-2xl font-black text-center text-sm hover:bg-[#00B074] hover:text-white transition-all shadow-sm block"
                                     >
-                                        {applying === job.job_id ? (
-                                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                        ) : appliedJobs.includes(job.job_id) ? (
-                                            <>
-                                                Already Applied <CheckCircle size={20} />
-                                            </>
-                                        ) : (
-                                            <>
-                                                Apply Now <Send size={20} />
-                                            </>
-                                        )}
-                                    </button>
+                                        View Details & More
+                                    </Link>
+                                    <div className="flex gap-3 w-full">
+                                        <button 
+                                            onClick={() => toggleWishlist(job.job_id)}
+                                            className={`p-4 rounded-2xl transition-all shadow-sm border cursor-pointer ${
+                                                wishlist.includes(job.job_id) 
+                                                    ? 'bg-[#00B074] text-white border-[#00B074]' 
+                                                    : 'bg-gray-50 text-[#00B074] border-transparent hover:bg-[#00B074] hover:text-white'
+                                            }`}
+                                            title={wishlist.includes(job.job_id) ? "Remove from Wishlist" : "Save to Wishlist"}
+                                        >
+                                            <Heart size={20} fill={wishlist.includes(job.job_id) ? "currentColor" : "none"} />
+                                        </button>
+                                        <button
+                                            onClick={() => applyJob(job.job_id, job.match_percentage)}
+                                            disabled={applying === job.job_id || appliedJobs.includes(job.job_id)}
+                                            className={`flex-grow font-black py-4 rounded-2xl transition-all flex justify-center items-center gap-2 text-sm active:scale-95 ${appliedJobs.includes(job.job_id)
+                                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200'
+                                                : 'bg-[#00B074] text-white hover:bg-[#009663] shadow-xl shadow-emerald-200 disabled:opacity-70'
+                                                }`}
+                                        >
+                                            {applying === job.job_id ? (
+                                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                            ) : appliedJobs.includes(job.job_id) ? (
+                                                <>
+                                                    Applied <CheckCircle size={16} />
+                                                </>
+                                            ) : (
+                                                <>
+                                                    Apply <Send size={16} />
+                                                </>
+                                            )}
+                                        </button>
+                                    </div>
                                 </div>
                             </motion.div>
                         ))}

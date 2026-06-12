@@ -61,6 +61,13 @@ def get_all_jobs():
     jobs = list(jobs_collection.find({}, {"_id": 0}))
     return jobs
 
+@router.get("/jobs/{job_id}")
+def get_job_by_id(job_id: str):
+    job = jobs_collection.find_one({"job_id": job_id}, {"_id": 0})
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+    return job
+
 @router.delete("/jobs/{job_id}")
 def delete_spam_job(job_id: str):
     res = jobs_collection.delete_one({"job_id": job_id})

@@ -108,11 +108,14 @@ def get_recommendations(user_id: str):
     full_recs = []
     for rec in recommended:
         job_full = jobs_collection.find_one({"_id": ObjectId(rec["id"])})
-        job_full["_id"] = str(job_full["_id"])
-        job_full["ai_match_score"] = rec["ai_match_score"]
-        job_full["match_percentage"] = rec["match_percentage"]
-        full_recs.append(job_full)
+        if job_full:
+            job_full["_id"] = str(job_full["_id"])
+            job_full["ai_match_score"] = rec["ai_match_score"]
+            job_full["match_percentage"] = rec["match_percentage"]
+            full_recs.append(job_full)
         
+    # Sort by literal match percentage in descending order
+    full_recs = sorted(full_recs, key=lambda x: x.get("match_percentage", 0), reverse=True)
     return full_recs
 
 @router.get("/skill-gap/{user_id}/{job_id}")

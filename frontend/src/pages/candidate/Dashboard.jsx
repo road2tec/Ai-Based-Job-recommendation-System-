@@ -139,18 +139,22 @@ export default function CandidateDashboard() {
 
                         <div className="space-y-6">
                             {applications.length > 0 ? applications.map((item, i) => (
-                                <div key={i} className="flex items-center justify-between p-6 bg-gray-50 rounded-3xl group border border-transparent hover:border-[#00B074]/20 hover:bg-white transition-all shadow-sm">
+                                <Link 
+                                    key={i} 
+                                    to={`/jobs/${item.job_id}`}
+                                    className="flex items-center justify-between p-6 bg-gray-50 rounded-3xl group border border-transparent hover:border-[#00B074]/20 hover:bg-white transition-all shadow-sm cursor-pointer"
+                                >
                                     <div className="flex items-center gap-5">
                                         <div className="bg-white p-3 rounded-2xl text-[#00B074] shadow-sm group-hover:bg-[#00B074] group-hover:text-white transition-colors">
                                             <CheckCircle />
                                         </div>
                                         <div>
-                                            <h4 className="font-black text-gray-900">Applied to {item.job_title} at {item.company_name}</h4>
+                                            <h4 className="font-black text-gray-900 group-hover:text-[#00B074] transition-colors">Applied to {item.job_title} at {item.company_name}</h4>
                                             <p className="text-xs font-bold text-gray-400">Match Score: {item.match_score}%</p>
                                         </div>
                                     </div>
                                     <span className="bg-emerald-50 text-[#00B074] px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest border border-emerald-100">{item.status}</span>
-                                </div>
+                                </Link>
                             )) : (
                                 <p className="text-sm font-bold text-gray-400 text-center py-4">No recent activity.</p>
                             )}

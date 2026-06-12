@@ -253,8 +253,26 @@ export default function FindJobs() {
                                     </button>
                                 </div>
                             </div>
-                            <div className="flex flex-col md:items-end gap-3 text-right">
-                                <div className="flex gap-4">
+                            <div className="flex flex-col md:items-end gap-3 text-right shrink-0">
+                                <div className="flex gap-3 flex-wrap justify-center md:justify-end">
+                                    <Link 
+                                        to={`/jobs/${job.job_id}`} 
+                                        className="bg-white text-[#00B074] border border-[#00B074] py-4 px-8 rounded-2xl font-black text-lg hover:bg-[#00B074] hover:text-white transition-all shadow-sm flex items-center justify-center"
+                                    >
+                                        View More
+                                    </Link>
+                                    {appliedJobs.includes(job.job_id) ? (
+                                        <button disabled className="bg-gray-100 text-gray-400 py-4 px-8 rounded-2xl font-black text-lg border border-gray-200 cursor-not-allowed flex items-center justify-center gap-2">
+                                            Already Applied <CheckCircle size={20} />
+                                        </button>
+                                    ) : (
+                                        <Link 
+                                            to={userId ? `/jobs/${job.job_id}` : '/login'} 
+                                            className="bg-[#00B074] text-white py-4 px-8 rounded-2xl font-black text-lg hover:bg-[#009663] transition-all shadow-xl shadow-emerald-400/20 flex items-center justify-center"
+                                        >
+                                            Apply Now
+                                        </Link>
+                                    )}
                                     {/* Wishlist button */}
                                     <button
                                         onClick={() => toggleWishlist(job.job_id)}
@@ -263,15 +281,6 @@ export default function FindJobs() {
                                     >
                                         <Heart size={22} fill={wishlist.includes(job.job_id) ? "currentColor" : "none"} />
                                     </button>
-                                    {appliedJobs.includes(job.job_id) ? (
-                                        <button disabled className="bg-gray-100 text-gray-400 py-4 px-10 rounded-2xl font-black text-lg border border-gray-200 cursor-not-allowed flex items-center gap-2">
-                                            Already Applied <CheckCircle size={20} />
-                                        </button>
-                                    ) : (
-                                        <Link to={userId ? '/candidate/dashboard' : '/login'} className="bg-[#00B074] text-white py-4 px-10 rounded-2xl font-black text-lg hover:bg-[#009663] transition-all shadow-xl shadow-emerald-400/20">
-                                            Apply Now
-                                        </Link>
-                                    )}
                                 </div>
                             </div>
                         </motion.div>

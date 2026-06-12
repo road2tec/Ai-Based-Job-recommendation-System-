@@ -126,6 +126,13 @@ export default function MyApplications() {
                                                 <span className="text-xs font-black text-[#00B074] uppercase tracking-widest">AI Match Score</span>
                                                 <span className="text-lg font-black text-[#00B074]">{app.match_score || "N/A"}%</span>
                                             </div>
+
+                                            <Link 
+                                                to={`/jobs/${app.job_id}`}
+                                                className="w-full bg-white hover:bg-emerald-50/30 text-[#00B074] border border-emerald-100 py-3 rounded-2xl font-black text-center text-xs transition-all shadow-sm block mb-4"
+                                            >
+                                                View More Details
+                                            </Link>
                                         </div>
 
                                         <div className="text-xs font-bold text-gray-400 uppercase tracking-widest pt-4 border-t border-gray-50 text-right">
