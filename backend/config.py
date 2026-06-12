@@ -15,4 +15,4 @@ class Settings:
     YOUTUBE_API_KEY: str = os.getenv("YOUTUBE_API_KEY", "")
 
 settings = Settings()
-# Trigger reload to load new env settings
+# Trigger reload to load new env settings v2
